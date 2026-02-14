@@ -1,6 +1,13 @@
-FROM r-base:latest
+FROM rocker/rstudio:4.4.2
 
-COPY . /home/rstudio/project
 WORKDIR /home/rstudio/project
 
-FROM rocker/rstudio:4.4.2
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+
+RUN R -e "install.packages('renv')" \
+  && R -e "renv::restore()"
+
+COPY . .
+
+EXPOSE 8787
