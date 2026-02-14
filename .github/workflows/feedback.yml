@@ -1,0 +1,34 @@
+name: Exam Feedback
+on: 
+  push:
+    paths-ignore:
+      - 'README.md'  
+  workflow_dispatch: 
+
+jobs:
+  provide-feedback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.12'
+
+      - name: Run Auto Feedback
+        run: |
+          python .github/scripts/grade.pyc
+                
+      - name: Build and Verify Docker Image
+        # Only run this if the python checks passed
+        if: success() 
+        run: |
+          echo "🐳 Building Docker image..."
+          docker build -t exam-submission .
+
+          echo "🔍 Verifying ggplot2 installation..."
+          # Run a temporary container to check if ggplot2 loads. 
+          # If the library is missing, Rscript returns a non-zero exit code, failing the step.
+          docker run --rm exam-submission Rscript -e "library(ggplot2); print('ggplot2 loaded successfully!')"
