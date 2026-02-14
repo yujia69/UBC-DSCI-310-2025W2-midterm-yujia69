@@ -8,7 +8,8 @@ install.packages("dplyr")
 library(ggplot2)
 library(dplyr)
 
-data <- read.csv("C:/Users/magda/Desktop/data-science-project/data.csv")
+data <- read.csv("data/data.csv")
+set.seed(123)
 
 print("Data loaded successfully!")
 
